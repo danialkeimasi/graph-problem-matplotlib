@@ -59,21 +59,23 @@ class Graph:
         return self
 
     def get_weight_list(self):
+        """ get the wights of path edges as a list """
+
         return [edge[2]['weight'] for edge in list(self.graph.edges(data=True))]
 
 
     def limit_read_to_days(self, wanted_days):
-        """  """
+        """ the answer for the problem """
+        
         page_per_days = self.get_weight_list()
         season_per_day = [1 for i in page_per_days]
 
         while len(season_per_day) > wanted_days:
-
-            del_index = np.argmin(page_per_days)
-
-            indexes = {index:page_per_days[index] for index in [del_index + 1, del_index - 1] if 0 <= index < len(page_per_days)}
-            replace_index = min(indexes, key=indexes.get)
-
+            
+            indexes = [page_per_days[i] + page_per_days[i+1] for i in range(len(page_per_days) - 1)]
+            replace_index = np.argmin(indexes)
+            del_index = replace_index + 1
+            
             page_per_days[replace_index] += page_per_days[del_index]; page_per_days.pop(del_index)
             season_per_day[replace_index] += season_per_day[del_index]; season_per_day.pop(del_index)
         
