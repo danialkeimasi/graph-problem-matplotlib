@@ -2,24 +2,26 @@ import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np
 
-
 class Graph:
-    def __init__(self, edges_list=None):
-        if edges_list:
-            self.update(edges_list)
-        else:
-            self.graph = nx.DiGraph()
+    """ directed weighted graph """
 
+    def __init__(self, edgelist=[]):
+        """ edge list is a special list that shows a graph """
+
+        self.constract_by_edgelist(edgelist)
 
     def input_cli(self):
+        """ a cli interface for get the wanted graph """
+
         size = int(input('enter number of seosons: '))
         weight_list = [int(input(f'pages of {i+1}th season: ')) for i in range(size)]
-        self.constract_with(size, weight_list)
 
+        self.constract_with(size, weight_list)
         return self
         
-
     def constract_with(self, seasons_len, weight_list):
+        """ constract the special graph """
+
         G = nx.DiGraph()
 
         node_numbers = list(map(lambda n: n+1, range(seasons_len))) + ['done']
@@ -29,11 +31,11 @@ class Graph:
             G.add_edge(node_numbers[i], node_numbers[i + 1], weight=weight_list[i])
 
         self.graph = G
-
         return self
-        
 
     def show(self):
+        """ showing the graph in the screen """
+
         G = self.graph
         pos = nx.spring_layout(G)
 
@@ -41,52 +43,50 @@ class Graph:
         nx.draw_networkx_edges(G, pos, edgelist=G.edges(), width=6)
         nx.draw_networkx_labels(G, pos, font_size=10, font_family='sans-serif')
 
-        edge_labels=dict([((u, v), d['weight']) for u,v,d in G.edges(data=True)])
+        edge_labels=dict([((u, v), d['weight']) for u, v, d in G.edges(data=True)])
         nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=10, font_family='sans-serif')
 
         plt.axis('off')
         plt.show()
         
-
-    def update(self, edge_list):
+    def constract_by_edgelist(self, edgelist):
+        """ constract a graph by it's edge list """
+        
         G = nx.DiGraph()
-        G.add_edges_from(edge_list)
+        G.add_edges_from(edgelist)
+        
         self.graph = G
-
         return self
 
-    
     def get_weight_list(self):
         return [edge[2]['weight'] for edge in list(self.graph.edges(data=True))]
-    
 
 
-def answer(page_per_days, wanted_days):
-    season_per_day = [1 for i in page_per_days]
+    def limit_read_to_days(self, wanted_days):
+        """  """
+        page_per_days = self.get_weight_list()
+        season_per_day = [1 for i in page_per_days]
 
-    while len(page_per_days) > wanted_days:
+        while len(season_per_day) > wanted_days:
 
-        del_index = np.argmin(page_per_days)
+            del_index = np.argmin(page_per_days)
 
-        indexes = {ind:page_per_days[ind] for ind in [del_index + 1, del_index - 1] if 0 <= ind < len(page_per_days)}        
-        index = min(indexes, key=indexes.get)
+            indexes = {index:page_per_days[index] for index in [del_index + 1, del_index - 1] if 0 <= index < len(page_per_days)}
+            replace_index = min(indexes, key=indexes.get)
 
-        page_per_days[index] += page_per_days[del_index]
-        season_per_day[index] += 1
+            page_per_days[replace_index] += page_per_days[del_index]; page_per_days.pop(del_index)
+            season_per_day[replace_index] += season_per_day[del_index]; season_per_day.pop(del_index)
         
-        season_per_day.pop(del_index)
-        page_per_days.pop(del_index)
-    
-    return season_per_day
+        return season_per_day
 
 
 if __name__ == "__main__":
-    input_graph = Graph().input_cli()
 
-    season_pages = input_graph.get_weight_list()
+    input_graph = Graph().input_cli()
     wanted_days = int(input('how many days you want to spend on this book: '))
 
-    season_per_days = answer(season_pages, wanted_days)
+    season_per_days = input_graph.limit_read_to_days(wanted_days)
+    
     for i, season in enumerate(season_per_days):
         print(f'in day number {i+1} you must read {season} {"season" if season == 1 else "seasons"}')
 
