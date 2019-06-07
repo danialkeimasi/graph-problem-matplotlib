@@ -79,7 +79,7 @@ class Graph:
             page_per_days[replace_index] += page_per_days[del_index]; page_per_days.pop(del_index)
             season_per_days[replace_index] += season_per_days[del_index]; season_per_days.pop(del_index)
         
-        return season_per_days
+        return Graph().constract_with(len(season_per_days), season_per_days)
 
 
 if __name__ == "__main__":
@@ -87,10 +87,9 @@ if __name__ == "__main__":
     input_graph = Graph().input_cli()
     wanted_days = int(input('how many days you want to spend on this book: '))
 
-    season_per_days = input_graph.days_with_deadline(wanted_days)
+    answer_graph = input_graph.days_with_deadline(wanted_days)
     
-    for i, season in enumerate(season_per_days):
+    for i, season in enumerate(answer_graph.get_weight_list()):
         print(f'in day number {i+1} you must read {season} {"season" if season == 1 else "seasons"}')
 
-    Graph().constract_with(len(season_per_days), season_per_days).show()
-
+    answer_graph.show()
