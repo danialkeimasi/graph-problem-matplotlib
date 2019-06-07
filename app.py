@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np
 
+
 class Graph:
     """ directed weighted graph """
 
@@ -63,23 +64,22 @@ class Graph:
 
         return [edge[2]['weight'] for edge in list(self.graph.edges(data=True))]
 
-
-    def limit_read_to_days(self, wanted_days):
+    def days_with_deadline(self, wanted_days):
         """ the answer for the problem """
         
         page_per_days = self.get_weight_list()
-        season_per_day = [1 for i in page_per_days]
+        season_per_days = [1 for i in page_per_days]
 
-        while len(season_per_day) > wanted_days:
+        while len(season_per_days) > wanted_days:
             
             indexes = [page_per_days[i] + page_per_days[i+1] for i in range(len(page_per_days) - 1)]
             replace_index = np.argmin(indexes)
             del_index = replace_index + 1
             
             page_per_days[replace_index] += page_per_days[del_index]; page_per_days.pop(del_index)
-            season_per_day[replace_index] += season_per_day[del_index]; season_per_day.pop(del_index)
+            season_per_days[replace_index] += season_per_days[del_index]; season_per_days.pop(del_index)
         
-        return season_per_day
+        return season_per_days
 
 
 if __name__ == "__main__":
@@ -87,10 +87,10 @@ if __name__ == "__main__":
     input_graph = Graph().input_cli()
     wanted_days = int(input('how many days you want to spend on this book: '))
 
-    season_per_days = input_graph.limit_read_to_days(wanted_days)
+    season_per_days = input_graph.days_with_deadline(wanted_days)
     
     for i, season in enumerate(season_per_days):
         print(f'in day number {i+1} you must read {season} {"season" if season == 1 else "seasons"}')
 
     Graph().constract_with(len(season_per_days), season_per_days).show()
-    
+
