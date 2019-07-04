@@ -9,19 +9,19 @@ class Graph:
     def __init__(self, edgelist=[]):
         """ edge list is a special list that shows a graph """
 
-        self.constract_by_edgelist(edgelist)
+        self.construct_by_edgelist(edgelist)
 
     def input_cli(self):
         """ a cli interface for get the wanted graph """
 
-        size = int(input('enter number of seosons: '))
+        size = int(input('enter number of seasons: '))
         weight_list = [int(input(f'pages of {i+1}th season: ')) for i in range(size)]
 
-        self.constract_with(size, weight_list)
+        self.construct_with(size, weight_list)
         return self
 
-    def constract_with(self, seasons_len, weight_list):
-        """ constract the special graph """
+    def construct_with(self, seasons_len, weight_list):
+        """ construct the special graph """
 
         G = nx.DiGraph()
 
@@ -50,8 +50,8 @@ class Graph:
         plt.axis('off')
         plt.show()
 
-    def constract_by_edgelist(self, edgelist):
-        """ constract a graph by it's edge list """
+    def construct_by_edgelist(self, edgelist):
+        """ construct a graph by it's edge list """
 
         G = nx.DiGraph()
         G.add_edges_from(edgelist)
@@ -79,7 +79,7 @@ class Graph:
             page_per_days[replace_index] += page_per_days[del_index]; page_per_days.pop(del_index)
             season_per_days[replace_index] += season_per_days[del_index]; season_per_days.pop(del_index)
 
-        return Graph().constract_with(len(season_per_days), season_per_days)
+        return Graph().construct_with(len(season_per_days), season_per_days)
 
 
 if __name__ == "__main__":
