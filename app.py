@@ -19,7 +19,7 @@ class Graph:
 
         self.constract_with(size, weight_list)
         return self
-        
+
     def constract_with(self, seasons_len, weight_list):
         """ constract the special graph """
 
@@ -49,13 +49,13 @@ class Graph:
 
         plt.axis('off')
         plt.show()
-        
+
     def constract_by_edgelist(self, edgelist):
         """ constract a graph by it's edge list """
-        
+
         G = nx.DiGraph()
         G.add_edges_from(edgelist)
-        
+
         self.graph = G
         return self
 
@@ -66,19 +66,19 @@ class Graph:
 
     def days_with_deadline(self, wanted_days):
         """ the answer for the problem """
-        
+
         page_per_days = self.get_weight_list()
         season_per_days = [1 for i in page_per_days]
 
         while len(season_per_days) > wanted_days:
-            
+
             indexes = [page_per_days[i] + page_per_days[i+1] for i in range(len(page_per_days) - 1)]
             replace_index = np.argmin(indexes)
             del_index = replace_index + 1
-            
+
             page_per_days[replace_index] += page_per_days[del_index]; page_per_days.pop(del_index)
             season_per_days[replace_index] += season_per_days[del_index]; season_per_days.pop(del_index)
-        
+
         return Graph().constract_with(len(season_per_days), season_per_days)
 
 
@@ -88,7 +88,7 @@ if __name__ == "__main__":
     wanted_days = int(input('how many days you want to spend on this book: '))
 
     answer_graph = input_graph.days_with_deadline(wanted_days)
-    
+
     for i, season in enumerate(answer_graph.get_weight_list()):
         print(f'in day number {i+1} you must read {season} {"season" if season == 1 else "seasons"}')
 
